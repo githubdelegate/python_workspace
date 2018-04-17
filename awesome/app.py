@@ -26,17 +26,30 @@ def run_thread(n):
             change_it(n)
         finally:
             lock.release()
-            
 
+
+
+
+local_school = threading.local()
+
+def process_thread(name):
+    local_school.student = name
+    process_student()
+
+def process_student():
+    std = local_school.student
+    print('hello %s (in %s)' % (std,threading.current_thread().name))
+
+            
 if __name__=='__main__':
-    t1 = threading.Thread(target=run_thread,args=(5,))
-    t2 = threading.Thread(target=run_thread,args=(8,))
+
+    t1 = threading.Thread(target=process_thread,args=('alice',),name='thread_a')
+    t2 = threading.Thread(target=process_thread,args=('bob',),name='thread_b')
     t1.start()
     t2.start()
     t1.join()
     t2.join()
-    print(balance)
-    
+
 
 
 
