@@ -1,6 +1,7 @@
 
 from aiohttp import web
 import time,threading
+import mysql.connector
 
 def Loop():
     print('thread %s is running' % threading.current_thread().name)
@@ -42,13 +43,23 @@ def process_student():
 
             
 if __name__=='__main__':
+    conn = mysql.connector.connect(user='root',password='',database='test')
+    cursor = conn.cursor()
+    cursor.execute('create table user(id varchar(20) primary key,name varchar(20))')
+    cursor.execute('insert into user (id,name) values (%s,%s)',['1','maic'])
+    conn.commit()
+    cursor.close()
 
-    t1 = threading.Thread(target=process_thread,args=('alice',),name='thread_a')
-    t2 = threading.Thread(target=process_thread,args=('bob',),name='thread_b')
-    t1.start()
-    t2.start()
-    t1.join()
-    t2.join()
+    cursor = conn.cursor()
+    cursor.execute('select * from user where id =%s',('1',))
+    values = cursor.fetchall()
+    print('values= %s' % values)
+    cursor.close()
+    conn.close()
+    
+
+
+
 
 
 
