@@ -1,20 +1,23 @@
-from flask import jsonify
+from flask import jsonify, request
 
 from helper import is_isbn_or_key
 from yushu_book import YuShuBook
-from flask import Blueprint
+from app.forms.book import SearchForm
 
-web = Blueprint('web', __name__)
+from . import web
 
 
-@web.route('/book/search/<q>/<page>')
-def search(q, page):
-    isbn_or_key = is_isbn_or_key(q)
+@web.route('/book/search/')
+def search():
+    form = SearchForm(request.args)
+    if form.validate():
+        q = form.q.data.strip()
+        page = form.page.data
 
-    if isbn_or_key == 'isbn':
-        result = YuShuBook.search_by_isbn(q)
-    else:
-        result = YuShuBook.search_by_keywork(q)
+        isbn_or_key = is_isbn_or_key(q)
 
-    return jsonify(result)
-    # return json.dump(result), 200, {'content-type':'application/json'}
+        if isbn_or_key == 'isbn':
+            result = YuShuBook.search_by_isbn(q)
+        else:
+            result = YuShuBook.search_by_keywork(q)
+        return jsonify(result)
