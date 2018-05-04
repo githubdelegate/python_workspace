@@ -1,9 +1,6 @@
-
-from flask import Flask
-
 import requests
 
-class HTTP:
+class BookHTTP:
     @staticmethod
     def get(url,return_json=True):
         r = requests.get(url)

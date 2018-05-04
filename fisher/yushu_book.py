@@ -1,5 +1,5 @@
 
-from http import HTTP
+from book_http import BookHTTP
 
 class YuShuBook:
 
@@ -9,11 +9,11 @@ class YuShuBook:
     @classmethod
     def search_by_isbn(cls,isbn):
         url = cls.isbn_url.format(isbn)
-        result = HTTP.get(url)
+        result = BookHTTP.get(url)
         return result
 
     @classmethod
     def search_by_keywork(cls,keyword,count=15,start=0):
         url = cls.keyword_url.format(keyword,count,start)
-        result = HTTP.get(url)
+        result = BookHTTP.get(url)
         return result

@@ -1,23 +1,10 @@
 
-from flask import Flask,jsonify
-from helper import is_isbn_or_key
-from yushu_book import YuShuBook
-import json
+from flask import Flask
 
-app = Flask(__name__)
-app.config.from_object('config')
+from app import create_app
 
-@app.route('book/seatch/<q>/<page>')
-def search(q, page):
-    isbn_or_key = is_isbn_or_key(q)
-
-    if isbn_or_key == 'isbn':
-        result = YuShuBook.search_by_isbn(q)
-    else:
-        result = YuShuBook.search_by_keywork(q)
-
-    return jsonify(result)
-    # return json.dump(result), 200, {'content-type':'application/json'}
+app = create_app()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    print(id(app))
+    app.run(host='0.0.0.0', debug=True, port=5000)
