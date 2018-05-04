@@ -21,3 +21,5 @@ def search():
         else:
             result = YuShuBook.search_by_keywork(q)
         return jsonify(result)
+    else:
+        return jsonify(form.errors)
