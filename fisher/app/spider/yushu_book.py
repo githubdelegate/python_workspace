@@ -1,5 +1,5 @@
 
-from book_http import BookHTTP
+from app.libs.book_http import BookHTTP
 from flask import  current_app
 
 class YuShuBook:
