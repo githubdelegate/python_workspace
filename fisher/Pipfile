@@ -9,6 +9,7 @@ wtforms = "*"
 sqlalchemy = "*"
 flask-sqlalchemy = "*"
 cymysql = "*"
+flask-login = "*"
 
 [dev-packages]
 
