@@ -1,4 +1,4 @@
-from flask import jsonify, request, render_template
+from flask import jsonify, request, render_template, flash
 
 from app.libs.helper import is_isbn_or_key
 from app.spider.yushu_book import YuShuBook
@@ -25,14 +25,13 @@ def search():
         else:
             yushu_book.search_by_keywork(q, page)
         books.fill(yushu_book, q)
-        return json.dumps(books, default=lambda o: o.__dict__)
+        # return json.dumps(books, default=lambda o: o.__dict__)
     else:
-        return jsonify(form.errors)
+        flash('搜索的关键字不符号规范')
+        # return jsonify(form.errors)
+    return render_template('search_result.html', books=books)
 
 
-
-@web
-
-@web.route('/book/edit')
-def edit():
-    return render_template('richTextEditor.html')
+@web.route('/book/<isbn>/detail')
+def book_detail(isbn):
+    pass
