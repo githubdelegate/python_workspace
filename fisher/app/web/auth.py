@@ -2,9 +2,11 @@ from flask import render_template, redirect, current_app, g
 from flask import request, flash, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import get_debug_queries
-from app.forms.auth import RegisterForm
+from app.forms.auth import RegisterForm, LoginForm
 from app.models.user import User
 from . import web
+from app.models.base import db
+
 # from app.forms.auth import RegisterForm, LoginForm, ResetPasswordForm, EmailForm, \
 #     ChangePasswordForm
 # from app.models.user import User
@@ -20,14 +22,26 @@ def register():
     if request.method == 'POST' and form.validate():
         user = User()
         user.set_attrs(form.data)
-
-    return  render_template('auth/register.html', form={})
-    pass
-
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('web.login'))
+    return  render_template('auth/register.html', form=form)
 
 @web.route('/login', methods=['GET', 'POST'])
 def login():
-    pass
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user)
+            # 下面的逻辑是登陆后能直接跳转到对应的页面 而不一定是首页
+            next = request.args.get('next')
+            if not next or not next.startwith('/'):
+                next = url_for('web.index')
+            return redirect(next)
+        else:
+            flash('账号不存在，密码错误')
+    return  render_template('auth/login.html', form=form)
 
 @web.route('/reset/password', methods=['GET', 'POST'])
 def forget_password_request():
