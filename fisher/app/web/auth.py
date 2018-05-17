@@ -2,7 +2,8 @@ from flask import render_template, redirect, current_app, g
 from flask import request, flash, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import get_debug_queries
-
+from app.forms.auth import RegisterForm
+from app.models.user import User
 from . import web
 # from app.forms.auth import RegisterForm, LoginForm, ResetPasswordForm, EmailForm, \
 #     ChangePasswordForm
@@ -12,9 +13,15 @@ from . import web
 
 __author__ = '七月'
 
-
+# get 注册页面， post 提交注册信息页面
 @web.route('/register', methods=['GET', 'POST'])
 def register():
+    form = RegisterForm(request.form)
+    if request.method == 'POST' and form.validate():
+        user = User()
+        user.set_attrs(form.data)
+
+    return  render_template('auth/register.html', form={})
     pass
 
 

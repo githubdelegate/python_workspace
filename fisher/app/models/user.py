@@ -4,6 +4,7 @@ from app.models.base import db, Base
 from  sqlalchemy import Column, Integer, String, Boolean, Float
 
 class User(Base):
+    id = Column(Integer, primary_key=True, autoincrement=True)
     nickName = Column(String(24), nullable=False)
     phone = Column(String(18), unique=True)
     email = Column(String(50), unique=True, nullable=False)
