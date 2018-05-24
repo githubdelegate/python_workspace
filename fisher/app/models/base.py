@@ -3,8 +3,9 @@ from sqlalchemy import Column, Integer, String, SmallInteger
 from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy
 from contextlib import contextmanager
 
-class SQLAlchemy(_SQLAlchemy):
 
+# 这里使用了contextmanager 上下文管理器 实现了
+class SQLAlchemy(_SQLAlchemy):
     @contextmanager
     def auto_commit(self):
         try:

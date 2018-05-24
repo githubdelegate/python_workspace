@@ -3,6 +3,10 @@
 # from flask import render_template, flash, request, redirect, url_for, current_app
 # from flask_login import login_required, current_user
 # from sqlalchemy import desc, func
+
+from flask import current_app, flash
+
+from app.models.base import db
 from app.models.gift import Gift
 from . import web
 # from app.spider.yushu_book import YuShuBook
@@ -16,6 +20,7 @@ from flask_login import login_required, current_user
 
 __author__ = '七月'
 
+
 @login_required
 @web.route('/my/gifts')
 def my_gifts():
@@ -25,10 +30,21 @@ def my_gifts():
 @login_required
 @web.route('/gifts/book/<isbn>')
 def save_to_gifts(isbn):
-    gift = Gift()
-    gift.isbn = isbn
-    gift.uid = current_user.id
-    pass
+    if current_user.can_save_to_list(isbn):
+        # 数据库的回滚，
+        # try:
+        with db.auto_commit():
+            gift = Gift()
+            gift.isbn = isbn
+            gift.uid = current_user.id
+            current_user.beans += current_app.config['BEANS_UPLOAD_ONE_BOOK']
+            db.session.add(gift)
+            # db.session.commit()
+        # except Exception as e:
+        #     db.session.rollback()
+        #     raise e
+    else:
+        flash('这本书已经在赠送清单 或者在心愿清单')
 
 
 @web.route('/gifts/<gid>/redraw')

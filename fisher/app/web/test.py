@@ -1,32 +1,31 @@
-from time import sleep
+class test:
+    # def __enter__(self):
+    #     print('__enter__')
+    #     return self
+    #
+    # def __exit__(self, exc_type, exc_val, exc_tb):
+    #     print('__exit__')
 
-# from app.libs.http import Http
-# from app.models.test import Test1
-from . import web
-from flask import session, request
 
-
-@web.route('/session')
-def test_session():
-    session['test'] = 123
-    return ''
-
-@web.route('/record')
-def test_reord():
-    s = request.remote_addr
-    return s
-
-@web.route('/test')
-def test_ip():
-    pass
-
-@web.route('/get/session')
-def get_test_session():
-    t = session['_fresh']
-    return str(t)
-
-s = 'insert into table values (%s, %s, %s)' % (1,2,3)
+    def query(self):
+        print('query')
 
 
 
+# with test() as t:
+#     t.query()
 
+
+
+# 上下文管理器，
+#  contextmanager 的作用是把一个类 装饰成上下文管理器 ，而不需要修改原来的类的代码
+from contextlib import contextmanager
+@contextmanager
+def make_test():
+    print('begin')
+    yield test()
+    print('end')
+
+
+with make_test() as t:
+    t.query()
