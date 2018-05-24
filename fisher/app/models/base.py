@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String, SmallInteger
 from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy
 from contextlib import contextmanager
-
+from datetime import datetime
 
 # 这里使用了contextmanager 上下文管理器 实现了
 class SQLAlchemy(_SQLAlchemy):
@@ -23,6 +23,10 @@ class Base(db.Model):
     __abstract__ = True
     # create_time = Column('')
     status = Column(SmallInteger, default=1)
+    create_time = Column('create_time', Integer)
+
+    def __init__(self):
+        self.create_time = int(datetime.now().timestamp())
 
 
 # python 动态特性，更加字典 给属性赋值

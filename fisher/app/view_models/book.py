@@ -8,6 +8,8 @@ class BookViewModel:
         self.publisher = book['publisher']
         self.author = '`'.join(book['author'])
         self.image = book['image']
+        self.pubdate = book['pubdate']
+        self.binding = book['binding']
         self.price = book['price']
         self.summary = book['summary']
         self.pages = book['pages']
