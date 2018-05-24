@@ -4,7 +4,7 @@
 # from flask_login import login_required, current_user
 # from sqlalchemy import desc, func
 
-from flask import current_app, flash
+from flask import current_app, flash, render_template, url_for, redirect
 
 from app.models.base import db
 from app.models.gift import Gift
@@ -27,6 +27,7 @@ def my_gifts():
     pass
 
 
+
 @login_required
 @web.route('/gifts/book/<isbn>')
 def save_to_gifts(isbn):
@@ -45,6 +46,7 @@ def save_to_gifts(isbn):
         #     raise e
     else:
         flash('这本书已经在赠送清单 或者在心愿清单')
+    return redirect(url_for('web.book_detail', isbn=isbn))
 
 
 @web.route('/gifts/<gid>/redraw')
