@@ -2,12 +2,15 @@ from flask import current_app
 
 from app.models.base import db, Base
 
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, desc
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, desc, func
 from sqlalchemy.orm import relationship
 
 # 业务模型
 from app.models.wish import Wish
 from app.spider.yushu_book import YuShuBook
+
+
+
 
 class Gift(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -38,8 +41,12 @@ class Gift(Base):
         return gifts
 
     @classmethod
-    def get_wish_conts(cls, isbn_list):
-        db.session.query(Wish).filter(Wish.launched == False, Wish.isbn.in_(isbn_list), Wish.status == 1).group_by(
-            Wish.isbn).all()
+    def get_wish_connts(cls, isbn_list):
 
-        pass
+        # 这种查询方法的好处，用处
+        count_list = db.session.query(func.count(Wish.id), Wish.isbn).filter(
+            Wish.launched == False, Wish.isbn.in_(
+                isbn_list), Wish.status == 1).group_by(
+            Wish.isbn).all()
+        count_list = [{'count': w[0], 'isbn': w[1] } for w in count_list]
+        return count_list
