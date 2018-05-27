@@ -2,7 +2,7 @@ from flask import render_template, redirect, current_app, g
 from flask import request, flash, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import get_debug_queries
-from app.forms.auth import RegisterForm, LoginForm
+from app.forms.auth import RegisterForm, LoginForm, EmailForm, ResetPasswordForm
 from app.models.user import User
 from . import web
 from app.models.base import db
@@ -44,14 +44,33 @@ def login():
             flash('账号不存在，密码错误')
     return  render_template('auth/login.html', form=form)
 
+
 @web.route('/reset/password', methods=['GET', 'POST'])
 def forget_password_request():
-    pass
+    if request.method == 'POST':
+        form = EmailForm(request.form)
+        if form.validate():
+            account_email = form.email.data
+            user = User.query.filter_by(email=account_email).first_or_404()
+            from app.libs.email import  send_mail
+            send_mail(form.email.data, 'reset yours pwd man', user=user, token='xxxx')
+            flash('去邮箱查收')
+
+    return render_template('auth/forget_password_request.html', form=form)
+
 
 
 @web.route('/reset/password/<token>', methods=['GET', 'POST'])
 def forget_password(token):
-    pass
+    form = ResetPasswordForm(request.form)
+    if request.method == 'POST' and form.validate():
+        success = User.reset_password(token, form.pwd1.data)
+        if success:
+            flash('修改成功')
+            return  redirect(url_for('web.login'))
+        else:
+            flash('修改失败')
+    render_template('auth/forget_password.html')
 
 
 @web.route('/change/password', methods=['GET', 'POST'])

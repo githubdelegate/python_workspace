@@ -1,6 +1,10 @@
 from flask import Flask
+from flask_mail import Mail
+
 from app.models.base import db
 from flask_login import LoginManager
+
+mail = Mail()
 
 login_mgr = LoginManager()
 def create_app():
@@ -15,6 +19,8 @@ def create_app():
     login_mgr.login_message = '请登录'
     db.init_app(app)
     db.create_all(app=app)
+
+    mail.init_app(app)
 
     return app
 
