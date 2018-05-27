@@ -1,6 +1,6 @@
 
 from sqlalchemy import Column, Integer, String, SmallInteger
-from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy, BaseQuery
 from contextlib import contextmanager
 from datetime import datetime
 
@@ -16,6 +16,16 @@ class SQLAlchemy(_SQLAlchemy):
 
 
 db = SQLAlchemy()
+
+
+## 如何修改类库代码，实现自己的逻辑 基础基类，重写函数，
+class Query(BaseQuery):
+    def filter_by(self, **kwargs):
+        if 'status' not in kwargs.keys():
+            kwargs['status'] = 1
+
+        return super(Query, self).filter_by(**kwargs)
+
 
 
 class Base(db.Model):

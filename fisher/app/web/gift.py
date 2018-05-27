@@ -24,7 +24,9 @@ __author__ = '七月'
 @login_required
 @web.route('/my/gifts')
 def my_gifts():
-    pass
+    uid = current_user.id
+    gifts_of_mine = Gift.get_user_gift(uid)
+    isbn_list = [gift.isbn for gift in gifts_of_mine]
 
 
 

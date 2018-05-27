@@ -1,3 +1,5 @@
+from datetime import date
+
 class TradeInfo:
 
     def __init__(self, goods):
@@ -10,9 +12,8 @@ class TradeInfo:
         self.trades = [self.__map_to_trade(single) for single in goods]
 
     def __map_to_trade(self, single):
-
         if single.create_datetime:
-            time = single.create_time.strftime('%Y-%m-%d')
+            time = date.fromtimestamp(single.create_time).strftime('%Y-%m-%d')
         else:
             time = 'unkonw'
 
