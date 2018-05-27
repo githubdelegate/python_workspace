@@ -6,7 +6,6 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, desc, func
 from sqlalchemy.orm import relationship
 
 # 业务模型
-from app.models.wish import Wish
 from app.spider.yushu_book import YuShuBook
 
 
@@ -42,7 +41,7 @@ class Gift(Base):
 
     @classmethod
     def get_wish_connts(cls, isbn_list):
-
+        from app.models.wish import Wish
         # 这种查询方法的好处，用处
         count_list = db.session.query(func.count(Wish.id), Wish.isbn).filter(
             Wish.launched == False, Wish.isbn.in_(
